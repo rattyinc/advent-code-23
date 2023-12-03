@@ -1,5 +1,6 @@
 require('dotenv').config();
-let testString = `467..114..
+let testString = `
+467..114..
 ...*......
 ..35..633.
 ......#...
@@ -9,14 +10,14 @@ let testString = `467..114..
 ......755.
 ...$.*....
 .664.598..`
-let possibleEngineNumbers = [];
 let engineArray = testString.split('\n');
 console.log(engineArray);
 
-const findEngineNumbers = (string) => {
+const findEngineNumbers = (string, prevString, nextString) => {
+    let sum = 0;
     let engineNum = '';
     let enginNumFlag = false;
-    let symbolIndices = findSymbols(string);
+    let symbolIndices = findSymbols(string, prevString, nextString);
     [...string].forEach((str, i) => {
         if (str.match(/\d/)) {
             if (!engineNum) {
@@ -29,12 +30,14 @@ const findEngineNumbers = (string) => {
             if (engineNum) {
                 if (isAdjacentToSymbol(i - 1, symbolIndices) || enginNumFlag) {
                     console.log(engineNum)
+                    sum += Number(engineNum);
                 }
             }
             engineNum = '';
             enginNumFlag = false;
         }
     });
+    return sum;
 };
 
 const isAdjacentToSymbol = (i, arr) => {
@@ -47,20 +50,29 @@ const isAdjacentToSymbol = (i, arr) => {
     return isAdjacent;
 }
 
-const findSymbols = (string) => {
+const findSymbols = (...lines) => {
     let symbolIndicies = [];
-    [...string].forEach((str, i) => {
-        if (str.match(/[^\d\.]/)) {
-            symbolIndicies.push(i);
+    lines.forEach(string => {
+        // can be out of bounds so check for truth-type value
+        if (string) {
+            [...string].forEach((str, i) => {
+                if (str.match(/[^\d\.]/)) {
+                    symbolIndicies.push(i);
+                }
+            })
         }
     })
     return symbolIndicies;
 }
 
-engineArray.forEach(line => {
+// TEST CODE
+let sum = 0;
+engineArray.forEach((line, i) => {
     console.log('-------- line ' + line)
-    findEngineNumbers(line);
+    // pass in 3 possible lines
+    sum += findEngineNumbers(line, engineArray[i - 1], engineArray[i + 1]);
 })
+console.log(`Engine Sum: ${sum}`);
 
 // fetch('https://adventofcode.com/2023/day/3/input', {
 //     method: 'GET',
