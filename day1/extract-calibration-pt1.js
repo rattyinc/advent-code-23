@@ -1,9 +1,10 @@
+require('dotenv').config();
 const twoNumbersRegex = /([0-9])[^\n]*([0-9])|[0-9]/g
 fetch('https://adventofcode.com/2023/day/1/input', {
     method: 'GET',
     headers: {
       'Host': 'adventofcode.com',
-      'Cookie': 'your-session-cookie',
+      'Cookie': process.env.SESSION,
     }
 })
 .then((response) => { 

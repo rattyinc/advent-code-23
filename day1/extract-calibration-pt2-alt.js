@@ -1,3 +1,4 @@
+require('dotenv').config();
 // a no regex solution
 Array.prototype.first = function() {
     return this[0]
@@ -90,7 +91,7 @@ fetch('https://adventofcode.com/2023/day/1/input', {
     method: 'GET',
     headers: {
       'Host': 'adventofcode.com',
-      'Cookie': 'your-session-cookie',
+      'Cookie': process.env.SESSION,
     }
 })
 .then((response) => { 

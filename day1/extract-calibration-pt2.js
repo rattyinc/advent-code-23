@@ -1,3 +1,4 @@
+require('dotenv').config();
 const speltNumbers = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
 const digitPattern = `[0-9]|${speltNumbers.join('|')}`;
 const twoNumbersRegex = new RegExp(`(${digitPattern})[^\n]*(${digitPattern})\|(${digitPattern})`, 'g');
@@ -19,7 +20,7 @@ fetch('https://adventofcode.com/2023/day/1/input', {
     method: 'GET',
     headers: {
       'Host': 'adventofcode.com',
-      'Cookie': 'your-session-cookie',
+      'Cookie': process.env.SESSION,
     }
 })
 .then((response) => { 
