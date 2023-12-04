@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 let testString = `
 467..114..
 ...*......
@@ -10,26 +11,27 @@ let testString = `
 ......755.
 ...$.*....
 .664.598..`
-let engineArray = testString.split('\n');
-console.log(engineArray);
 
 const findEngineNumbers = (string, prevString, nextString) => {
     let sum = 0;
     let engineNum = '';
     let enginNumFlag = false;
     let symbolIndices = findSymbols(string, prevString, nextString);
+    let consoleOut = "";
     [...string].forEach((str, i) => {
         if (str.match(/\d/)) {
-            if (!engineNum) {
-                if (isAdjacentToSymbol(i, symbolIndices)) {
-                    enginNumFlag = true;
-                }
+            if (!engineNum && isAdjacentToSymbol(i, symbolIndices)) {
+                enginNumFlag = true;
             }
             engineNum += str;
+            // string is at the end of the line
+            if (i + 1 > string.length - 1 && (enginNumFlag || isAdjacentToSymbol(i, symbolIndices))) {
+                sum += Number(engineNum);
+            }
         } else {
             if (engineNum) {
                 if (isAdjacentToSymbol(i - 1, symbolIndices) || enginNumFlag) {
-                    console.log(engineNum)
+                    // consoleOut += engineNum + ',';
                     sum += Number(engineNum);
                 }
             }
@@ -37,6 +39,8 @@ const findEngineNumbers = (string, prevString, nextString) => {
             enginNumFlag = false;
         }
     });
+    // console.log(consoleOut);
+    // console.log(sum);
     return sum;
 };
 
@@ -56,7 +60,7 @@ const findSymbols = (...lines) => {
         // can be out of bounds so check for truth-type value
         if (string) {
             [...string].forEach((str, i) => {
-                if (str.match(/[^\d\.]/)) {
+                if (str.match(/[^\d.\n]/)) {
                     symbolIndicies.push(i);
                 }
             })
@@ -65,29 +69,29 @@ const findSymbols = (...lines) => {
     return symbolIndicies;
 }
 
-// TEST CODE
-let sum = 0;
-engineArray.forEach((line, i) => {
-    console.log('-------- line ' + line)
-    // pass in 3 possible lines
-    sum += findEngineNumbers(line, engineArray[i - 1], engineArray[i + 1]);
-})
-console.log(`Engine Sum: ${sum}`);
+const getEngineSum = (string) => {
+    let sum = 0;
+    let engineArray = string.split(`\n`);
+    engineArray.forEach((line, i) => {
+        // console.log(line)
+        sum += findEngineNumbers(line, engineArray[i - 1], engineArray[i + 1]);
+    })
+    console.log(`Engine Sum: ${sum}`);
+}
 
-// fetch('https://adventofcode.com/2023/day/3/input', {
-//     method: 'GET',
-//     headers: {
-//       'Host': 'adventofcode.com',
-//       'Cookie': process.env.SESSION,
-//     }
-// })
-// .then((response) => { 
-//     response.text()
-//     .then((text) => {
-//         let sum = 0;
-//         [...text.matchAll(gameRegEx)].forEach(game => {
-//             sum += powerBalls(game[0]);
-//         })
-//         console.log(`Sum of Games: ${sum}`);
-//     })
-// })
+// TEST CODE
+// getEngineSum(testString);
+
+fetch('https://adventofcode.com/2023/day/3/input', {
+    method: 'GET',
+    headers: {
+      'Host': 'adventofcode.com',
+      'Cookie': process.env.SESSION,
+    }
+})
+.then((response) => { 
+    response.text()
+    .then((text) => {
+        getEngineSum(text);
+    })
+})
